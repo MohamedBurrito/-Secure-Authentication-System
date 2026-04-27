@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Hub - 2FA Authentication</title>
+    <style>
+        /* (نفس الستايل الموجود في الأعلى لضمان التناسق) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { background-color: #0b111b; color: white; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-card { background: #161b26; padding: 2.5rem; border-radius: 1.5rem; width: 400px; text-align: center; border: 1px solid #1e293b; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        .subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0.5rem 0 2rem; }
+        .shield-icon { color: #3b82f6; font-size: 3rem; margin-bottom: 1rem; }
+        .input-field { width: 100%; padding: 0.9rem; background: #0f131d; border: 1px solid #2d3748; border-radius: 0.6rem; color: white; text-align: center; font-size: 1.5rem; letter-spacing: 8px; box-sizing: border-box; outline: none; }
+        .btn-verify { width: 100%; padding: 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 1.5rem; text-transform: uppercase; }
+        .error-msg { color: #ef4444; font-size: 0.8rem; margin-top: 1rem; }
+        input:-webkit-autofill { -webkit-text-fill-color: white !important; -webkit-box-shadow: 0 0 0px 1000px #0f131d inset !important; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div class="shield-icon">🔐</div>
+        <h2>Two-Step Verification</h2>
+        <p class="subtitle">Enter the 6-digit code from your Authenticator app to continue</p>
+        
+        {% with messages = get_flashed_messages() %}{% if messages %}
+            {% for msg in messages %}<div class="error-msg">{{ msg }}</div>{% endfor %}
+        {% endif %}{% endwith %}
+
+        <form method="POST">
+            <input type="text" name="code" class="input-field" placeholder="******" maxlength="6" required autofocus>
+            <button type="submit" class="btn-verify">AUTHORIZE ACCESS</button>
+        </form>
+        <p style="margin-top: 1.5rem; font-size: 0.75rem;"><a href="{{ url_for('login') }}" style="color: #94a3b8; text-decoration: none;">Back to Login</a></p>
+    </div>
+</body>
+</html>

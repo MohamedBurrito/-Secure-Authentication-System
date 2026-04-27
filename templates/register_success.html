@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="glass-card" style="text-align: center; max-width: 500px;">
+    <h2 style="margin-bottom: 1rem;">Setup 2FA Security</h2>
+    <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem;">Scan this QR code with your app, then enter the 6-digit code below to verify.</p>
+
+    <!-- الـ QR Code -->
+    <div style="background: white; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 2rem; box-shadow: 0 0 20px rgba(255,255,255,0.1);">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="display: block;">
+    </div>
+
+    <!-- فورم التأكد الفوري -->
+    <form action="/verify_setup" method="POST">
+        <input type="text" name="setup_code" placeholder="Enter 6-digit code" maxlength="6" 
+               style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; border: 2px solid var(--accent) !important;" required>
+        <button type="submit">VERIFY & PROCEED</button>
+    </form>
+
+    <a href="/login" class="link-btn">Skip for now and Login</a>
+</div>
+{% endblock %}

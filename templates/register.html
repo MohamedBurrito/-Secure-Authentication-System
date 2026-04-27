@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub - Register</title>
+    <style>
+        /* ستايل Sentinel Hub الاحترافي */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-color: #0b0f1a;
+            --card-bg: #161b26;
+            --input-bg: #11151f;
+            --primary-blue: #2563eb;
+            --text-white: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* منع بياض الخانات */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset !important;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .logo-box { color: var(--primary-blue); font-size: 2.5rem; margin-bottom: 0.5rem; }
+        h1 { margin: 0; letter-spacing: 2px; font-size: 1.6rem; }
+        h1 span { color: var(--primary-blue); }
+        .subtitle { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2rem; letter-spacing: 1px; }
+
+        .input-group { text-align: left; margin-bottom: 1.2rem; }
+        .input-group label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 12px; color: var(--text-muted); font-size: 0.9rem; }
+
+        .input-field {
+            width: 100%;
+            padding: 0.85rem 0.85rem 0.85rem 2.5rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.6rem;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-field:focus { border-color: var(--primary-blue); }
+
+        /* ستايل القائمة المنسدلة */
+        select.input-field { appearance: none; cursor: pointer; }
+
+        .btn-register {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+            transition: 0.2s;
+        }
+
+        .btn-register:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+
+        .footer a { color: var(--primary-blue); text-decoration: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div class="logo-box">🛡️</div>
+        <h1>SENTINEL <span>HUB</span></h1>
+        <p class="subtitle">Security Control Center</p>
+
+        <form method="POST">
+            <div class="input-group">
+                <label>Full Name</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input type="text" name="name" class="input-field" placeholder="Enter your name" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">✉️</span>
+                    <input type="email" name="email" class="input-field" placeholder="email@example.com" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>System Role</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔑</span>
+                    <select name="role" class="input-field">
+                        <option value="User">User</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">
+                CREATE ACCOUNT ➔
+            </button>
+        </form>
+
+        <div class="footer">
+            <span style="color: var(--text-muted);">HAVE AN ACCOUNT?</span>
+            <a href="{{ url_for('login') }}">BACK TO LOGIN ➔</a>
+        </div>
+    </div>
+</body>
+</html>

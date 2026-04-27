@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Hub - User Profile</title>
+    <style>
+        /* ستايل البروفايل الاحترافي */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-dark: #0b0f1a;
+            --card-bg: #161b26;
+            --primary-blue: #2563eb;
+            --admin-red: #ef4444;
+            --manager-gold: #f59e0b;
+            --user-green: #10b981;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* حاوية الأنميشن للدخول */
+        .profile-container {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            width: 450px;
+            padding: 3rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        /* تأثير الأفاتار (الصورة الشخصية) */
+        .avatar-wrapper {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--card-bg), #1e293b);
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            border: 4px solid var(--border-color);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.1) rotate(5deg);
+            border-color: var(--primary-blue);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ألوان الرتب في البروفايل */
+        .badge-Admin { background: rgba(239, 68, 68, 0.1); color: var(--admin-red); border: 1px solid var(--admin-red); }
+        .badge-Manager { background: rgba(245, 158, 11, 0.1); color: var(--manager-gold); border: 1px solid var(--manager-gold); }
+        .badge-User { background: rgba(16, 185, 129, 0.1); color: var(--user-green); border: 1px solid var(--user-green); }
+
+        /* صفوف المعلومات */
+        .info-section {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .value {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* الأزرار */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.9rem;
+            border-radius: 0.8rem;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .btn-back { background: #334155; color: white; }
+        .btn-back:hover { background: #475569; }
+
+        .btn-edit { background: var(--primary-blue); color: white; }
+        .btn-edit:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        /* الأنميشنز */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تأثير النبض البسيط خلف الصورة */
+        .avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+            animation: pulse 2s infinite;
+            opacity: 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="avatar-wrapper">
+                👤
+            </div>
+            
+            <h1>{{ user['name'] }}</h1>
+            <div class="role-badge badge-{{ user['role'] }}">
+                {{ user['role'] }} Access
+            </div>
+
+            <div class="info-section">
+                <div class="info-row">
+                    <span class="label">Full Name</span>
+                    <span class="value">{{ user['name'] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Email Address</span>
+                    <span class="value">{{ user['email'] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Account Status</span>
+                    <span class="value" style="color: var(--user-green);">● Verified</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">2FA Security</span>
+                    <span class="value" style="color: var(--primary-blue);">Enabled</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-back">DASHBOARD</a>
+                <button class="btn btn-edit">EDIT PROFILE</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

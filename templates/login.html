@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> <!-- لو حبيتي تستخدمي ملف منفصل -->
+    <title>Sentinel Hub - Login</title>
+    <style>
+        /* (نفس الـ CSS الموجود فوق للتناسق) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { background-color: #0b0f1a; color: white; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-card { background: #161b26; padding: 2.5rem; border-radius: 1.5rem; width: 380px; text-align: center; border: 1px solid #1e293b; }
+        h1 { margin: 0; letter-spacing: 2px; font-size: 1.6rem; }
+        h1 span { color: #2563eb; }
+        .input-field { width: 100%; padding: 0.85rem; background: #11151f; border: 1px solid #1e293b; border-radius: 0.6rem; color: white; margin-top: 0.5rem; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 0.9rem; background: #2563eb; color: white; border: none; border-radius: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 1.5rem; }
+        .input-group { text-align: left; margin-bottom: 1.5rem; }
+        .input-group label { font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        input:-webkit-autofill { -webkit-text-fill-color: white !important; -webkit-box-shadow: 0 0 0px 1000px #11151f inset !important; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div style="color: #2563eb; font-size: 2.5rem;">🛡️</div>
+        <h1>SENTINEL <span>HUB</span></h1>
+        <p style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 2rem;">Security Control Center</p>
+
+        <form method="POST">
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" class="input-field" placeholder="email@example.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">SIGN IN ➔</button>
+        </form>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: space-between; font-size: 0.75rem;">
+            <span style="color: #94a3b8;">NEW USER?</span>
+            <a href="{{ url_for('register') }}" style="color: #2563eb; text-decoration: none; font-weight: 700;">REGISTER HERE</a>
+        </div>
+    </div>
+</body>
+</html>
+

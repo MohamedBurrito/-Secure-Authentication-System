@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Hub - Control Center</title>
+    <style>
+        /* ستايل الداشبورد الاحترافي */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-dark: #0b0f1a;
+            --card-bg: #161b26;
+            --primary-blue: #2563eb;
+            --admin-red: #ef4444;
+            --manager-gold: #f59e0b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* الهيدر العلوي */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .header span { color: var(--primary-blue); }
+
+        .welcome-msg {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* شبكة البطاقات (Grid) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ستايل البطاقة الموحد */
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        /* الأزرار الملونة */
+        .btn-action {
+            display: inline-block;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 0.6rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-profile { background: #334155; color: white; }
+        .btn-admin { background: var(--admin-red); color: white; }
+        .btn-manager { background: var(--manager-gold); color: white; }
+        
+        .btn-action:hover { opacity: 0.9; }
+
+        /* تذييل الصفحة */
+        .footer-nav {
+            margin-top: 5rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+
+        .logout-link {
+            color: var(--admin-red);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* أنميشن للدخول */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* شارات الرتب (Badge) */
+        .role-badge {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-blue);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Welcome Back, <span>{{ name }}</span></h1>
+        <p class="welcome-msg text-muted">System Status: <span class="role-badge">{{ role }}</span></p>
+    </div>
+
+    <div class="grid-container">
+        
+        <!-- بطاقة الملف الشخصي - متاحة للجميع -->
+        <div class="dashboard-card">
+            <span class="card-icon">👤</span>
+            <div class="card-title">My Profile</div>
+            <p class="card-desc">View your personal information, security settings, and update your account details.</p>
+            <a href="{{ url_for('profile') }}" class="btn-action btn-profile">VIEW PROFILE</a>
+        </div>
+
+        <!-- بطاقة الإدارة - تظهر للمدير والأدمن فقط -->
+        {% if role in ['Admin', 'Manager'] %}
+        <div class="dashboard-card" style="border-left: 4px solid var(--manager-gold);">
+            <span class="card-icon">📊</span>
+            <div class="card-title">Manager Tools</div>
+            <p class="card-desc">Access system reports, audit logs, and monitor user activities across the platform.</p>
+            <a href="{{ url_for('manager_page') }}" class="btn-action btn-manager">OPEN REPORTS</a>
+        </div>
+        {% endif %}
+
+        <!-- بطاقة التحكم الكامل - تظهر للأدمن فقط -->
+        {% if role == 'Admin' %}
+        <div class="dashboard-card" style="border-left: 4px solid var(--admin-red);">
+            <span class="card-icon">🛡️</span>
+            <div class="card-title">Admin Panel</div>
+            <p class="card-desc">Full system authority. Manage user roles, security protocols, and database operations.</p>
+            <a href="{{ url_for('admin_page') }}" class="btn-action btn-admin">COMMAND CENTER</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div class="footer-nav">
+        <a href="{{ url_for('logout') }}" class="logout-link">LOGOUT SECURELY ➔</a>
+    </div>
+
+</body>
+</html>

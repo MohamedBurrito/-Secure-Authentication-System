@@ -1,0 +1,72 @@
+/* إعدادات الخط ومنع الميلان */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --primary-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-red: #ef4444;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif !important;
+    margin: 0; min-height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+}
+
+/* حل مشكلة بياض الخانات - Autofill */
+input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--card-bg) inset !important;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    padding: 2.5rem; border-radius: 1.5rem;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+}
+
+h1 { font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+p.subtitle { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 2rem; text-transform: uppercase; }
+
+.input-group { text-align: left; margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; }
+
+.input-field {
+    width: 100%; padding: 0.85rem;
+    background: #0f172a; border: 1px solid #334155;
+    border-radius: 0.6rem; color: white; box-sizing: border-box;
+    transition: border 0.3s;
+}
+
+.input-field:focus { border-color: var(--primary-blue); outline: none; }
+
+.btn {
+    width: 100%; padding: 0.9rem; border: none; border-radius: 0.6rem;
+    font-weight: 700; cursor: pointer; margin-top: 1rem;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: transform 0.2s;
+}
+
+.btn-blue { background: var(--primary-blue); color: white; }
+.btn-blue:hover { transform: translateY(-2px); background: #2563eb; }
+
+/* QR Code Styling */
+.qr-container {
+    background: white; padding: 15px; border-radius: 15px;
+    display: inline-block; margin: 1.5rem 0;
+}
+.qr-container img { width: 180px; height: 180px; }
+
+/* Table Styling */
+table { width: 100%; margin-top: 1.5rem; border-collapse: collapse; }
+th { text-align: left; font-size: 0.75rem; color: var(--text-muted); padding: 10px; border-bottom: 1px solid #334155; }
+td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid #1e293b; }

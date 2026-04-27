@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Sentinel Hub - Admin</title>
+    <style>
+        .admin-card { background: #161b26; padding: 2rem; border-radius: 1.5rem; width: 90%; max-width: 850px; border: 1px solid #1e293b; text-align: center; }
+        h1 { color: #ef4444; margin-bottom: 0.5rem; letter-spacing: 2px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        th { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #1e293b; text-align: left; }
+        td { padding: 15px 10px; border-bottom: 1px solid #0f172a; font-size: 0.9rem; text-align: left; }
+        .role-select { background: #0f172a; color: #3b82f6; border: 1px solid #334155; padding: 5px; border-radius: 5px; font-weight: bold; }
+        .btn-sm { padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.7rem; border: none; }
+        .btn-save { background: #3b82f6; color: white; margin-left: 5px; }
+        .btn-delete { background: none; border: 1px solid #ef4444; color: #ef4444; }
+        .btn-delete:hover { background: #ef4444; color: white; }
+    </style>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0b0f1a;">
+    <div class="admin-card">
+        <h1>SYSTEM OVERSEER</h1>
+        <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Full Authority Terminal</p>
+
+        {% with messages = get_flashed_messages() %}{% if messages %}
+            {% for msg in messages %}<div style="color: #10b981; margin-bottom: 1rem;">✔ {{ msg }}</div>{% endfor %}
+        {% endif %}{% endwith %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Email Address</th>
+                    <th>Update Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <form action="{{ url_for('update_role', target_id=user.id) }}" method="POST">
+                            <select name="new_role" class="role-select">
+                                <option value="User" {% if user.role == 'User' %}selected{% endif %}>User</option>
+                                <option value="Manager" {% if user.role == 'Manager' %}selected{% endif %}>Manager</option>
+                                <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                            </select>
+                            <button type="submit" class="btn-sm btn-save">SAVE</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('delete_user', target_id=user.id) }}" method="POST" onsubmit="return confirm('Delete this user permanently?');">
+                            <button type="submit" class="btn-sm btn-delete">DELETE</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('dashboard') }}" style="display: block; margin-top: 2rem; color: #94a3b8; text-decoration: none; font-size: 0.8rem;">➔ BACK TO DASHBOARD</a>
+    </div>
+</body>
+</html>

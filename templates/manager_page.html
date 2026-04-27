@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Sentinel Hub - Manager</title>
+    <style>
+        .manager-card { background: #161b26; padding: 2rem; border-radius: 1.5rem; width: 90%; max-width: 800px; border: 1px solid #1e293b; text-align: center; }
+        h1 { color: #f59e0b; letter-spacing: 2px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        th { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #1e293b; text-align: left; }
+        td { padding: 15px 10px; border-bottom: 1px solid #0f172a; font-size: 0.9rem; text-align: left; }
+        .role-text { color: #f59e0b; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
+    </style>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0b0f1a;">
+    <div class="manager-card">
+        <h1>MANAGER VIEW</h1>
+        <p style="color: #94a3b8; font-size: 0.8rem;">DATABASE MONITORING (READ-ONLY)</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>System Role</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td style="font-weight: 600;">{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td class="role-text">{{ user.role }}</td>
+                    <td style="color: #10b981; font-size: 0.75rem;">● ACTIVE</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('dashboard') }}" style="display: block; margin-top: 2rem; color: #94a3b8; text-decoration: none; font-size: 0.8rem;">➔ BACK TO DASHBOARD</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+        <div style="font-weight: 800; color: #7079f1;">CIPHER GATE</div>
+        <div>
+            {% if session.user_id %}
+            <a href="/dashboard" style="color:white; text-decoration:none; margin-right:15px; font-size:0.8rem">Dashboard</a>
+            <a href="/logout" style="color:#ef4444; text-decoration:none; font-size:0.8rem">Logout</a>
+            {% endif %}
+        </div>
+    </header>
+    {% block content %}{% endblock %}
+</body>
+</html>

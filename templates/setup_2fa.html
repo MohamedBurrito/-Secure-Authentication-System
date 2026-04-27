@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Hub - Setup 2FA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { background-color: #0b111b; color: white; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-card { background: #161b26; padding: 2.5rem; border-radius: 1.5rem; width: 400px; text-align: center; border: 1px solid #1e293b; box-shadow: 0 20px 50px rgba(0,0,0,0.5); box-sizing: border-box; }
+        h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        .subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0.5rem 0 1.5rem; line-height: 1.5; }
+        .qr-box { background: white; padding: 12px; border-radius: 1rem; display: inline-block; margin-bottom: 1rem; }
+        .qr-box img { width: 160px; height: 160px; display: block; }
+        
+        /* ستايل كود المفتاح اليدوي بعد الإصلاح */
+        .manual-key-container { margin-bottom: 1.5rem; width: 100%; }
+        .manual-key-label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;}
+        .manual-key-box { 
+            background: #0f131d; 
+            padding: 12px; 
+            border-radius: 0.6rem; 
+            border: 1px dashed #3b82f6; 
+            font-family: monospace; 
+            font-size: 1rem; /* تصغير الخط قليلا */
+            color: #3b82f6; 
+            letter-spacing: 2px; /* تقليل المسافة بين الحروف */
+            font-weight: bold; 
+            word-break: break-all; /* السطر السحري لمنع خروج النص من المربع */
+            box-sizing: border-box;
+        }
+
+        .btn-verify { width: 100%; padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; text-transform: uppercase; transition: 0.2s; box-sizing: border-box; }
+        .btn-verify:hover { background: #4338ca; transform: translateY(-1px); }
+        .warning-msg { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; padding: 12px; border-radius: 0.6rem; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <h2>Scan QR Code</h2>
+        <p class="subtitle">Open Google Authenticator on your phone and scan the code below. <strong>You will need it every time you log in.</strong></p>
+        
+        <div class="qr-box">
+            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+        </div>
+
+        <div class="manual-key-container">
+            <div class="manual-key-label">Or enter Setup Key manually:</div>
+            <div class="manual-key-box">{{ secret_key }}</div>
+        </div>
+
+        <div class="warning-msg">
+            ⚠ Do not skip! Setup 2FA before proceeding.
+        </div>
+
+        <form method="POST">
+            <button type="submit" class="btn-verify">I HAVE SAVED IT ➔</button>
+        </form>
+    </div>
+</body>
+</html>
