@@ -1,37 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Sentinel Hub - 2FA Authentication</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub | Multi-Factor Authentication</title>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* (نفس الستايل الموجود في الأعلى لضمان التناسق) */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { background-color: #0b111b; color: white; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-card { background: #161b26; padding: 2.5rem; border-radius: 1.5rem; width: 400px; text-align: center; border: 1px solid #1e293b; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
-        .subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0.5rem 0 2rem; }
-        .shield-icon { color: #3b82f6; font-size: 3rem; margin-bottom: 1rem; }
-        .input-field { width: 100%; padding: 0.9rem; background: #0f131d; border: 1px solid #2d3748; border-radius: 0.6rem; color: white; text-align: center; font-size: 1.5rem; letter-spacing: 8px; box-sizing: border-box; outline: none; }
-        .btn-verify { width: 100%; padding: 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 1.5rem; text-transform: uppercase; }
-        .error-msg { color: #ef4444; font-size: 0.8rem; margin-top: 1rem; }
-        input:-webkit-autofill { -webkit-text-fill-color: white !important; -webkit-box-shadow: 0 0 0px 1000px #0f131d inset !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-deep: #050811;
+            --primary-blue: #2563eb;
+            --accent-cyan: #0ea5e9;
+            --card-glass: rgba(22, 27, 38, 0.85);
+            --danger-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #1e293b, #050811);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* أنيميشن دخول الصفحة */
+        @keyframes entrance {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .auth-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            padding: 3rem 2.5rem;
+            border-radius: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            animation: entrance 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .shield-icon-box {
+            width: 70px;
+            height: 70px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .shield-icon-box i {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.5));
+        }
+
+        h2 { font-size: 1.6rem; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.5px; }
+        .subtitle { color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; margin-bottom: 2.5rem; }
+
+        /* ستايل خانة الإدخال - تركيز على الأرقام */
+        .input-field {
+            width: 100%;
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            color: var(--accent-cyan);
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 15px; /* تباعد الأرقام */
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-verify {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 1.1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px -5px var(--primary-blue);
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 15px 30px -5px var(--primary-blue);
+        }
+
+        /* ستايل رسالة الخطأ المطور */
+        .error-alert {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+            padding: 12px;
+            border-radius: 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 2rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .back-link:hover { color: var(--text-main); }
+
+        * { font-style: normal !important; }
     </style>
 </head>
 <body>
+
     <div class="auth-card">
-        <div class="shield-icon">🔐</div>
-        <h2>Two-Step Verification</h2>
-        <p class="subtitle">Enter the 6-digit code from your Authenticator app to continue</p>
+        <div class="shield-icon-box">
+            <i class="fas fa-user-lock"></i>
+        </div>
+
+        <h2>Identity Challenge</h2>
+        <p class="subtitle">Enter the 6-digit synchronization code generated by your device to authorize this session.</p>
         
-        {% with messages = get_flashed_messages() %}{% if messages %}
-            {% for msg in messages %}<div class="error-msg">{{ msg }}</div>{% endfor %}
-        {% endif %}{% endwith %}
+        <!-- رسالة الخطأ المنسقة -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                <div class="error-alert">
+                    <i class="fas fa-shield-slash"></i>
+                    {{ msg }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
         <form method="POST">
-            <input type="text" name="code" class="input-field" placeholder="******" maxlength="6" required autofocus>
-            <button type="submit" class="btn-verify">AUTHORIZE ACCESS</button>
+            <input type="text" name="code" class="input-field" 
+                   placeholder="000000" maxlength="6" 
+                   required autofocus autocomplete="off">
+                   
+            <button type="submit" class="btn-verify">
+                GRANT ACCESS <i class="fas fa-key" style="margin-left: 8px;"></i>
+            </button>
         </form>
-        <p style="margin-top: 1.5rem; font-size: 0.75rem;"><a href="{{ url_for('login') }}" style="color: #94a3b8; text-decoration: none;">Back to Login</a></p>
+
+        <a href="{{ url_for('login') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> RETURN TO TERMINAL
+        </a>
     </div>
+
 </body>
 </html>
