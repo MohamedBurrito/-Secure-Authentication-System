@@ -1,64 +1,266 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Sentinel Hub - Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub | System Overseer Terminal</title>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .admin-card { background: #161b26; padding: 2rem; border-radius: 1.5rem; width: 90%; max-width: 850px; border: 1px solid #1e293b; text-align: center; }
-        h1 { color: #ef4444; margin-bottom: 0.5rem; letter-spacing: 2px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-        th { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #1e293b; text-align: left; }
-        td { padding: 15px 10px; border-bottom: 1px solid #0f172a; font-size: 0.9rem; text-align: left; }
-        .role-select { background: #0f172a; color: #3b82f6; border: 1px solid #334155; padding: 5px; border-radius: 5px; font-weight: bold; }
-        .btn-sm { padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.7rem; border: none; }
-        .btn-save { background: #3b82f6; color: white; margin-left: 5px; }
-        .btn-delete { background: none; border: 1px solid #ef4444; color: #ef4444; }
-        .btn-delete:hover { background: #ef4444; color: white; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+        :root {
+            --bg-deep: #050811;
+            --card-glass: rgba(15, 20, 30, 0.9);
+            --admin-red: #ef4444;
+            --manager-gold: #f59e0b;
+            --user-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border-glow: rgba(239, 68, 68, 0.2);
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1e293b, #050811);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        /* أنيميشن الدخول */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .terminal-container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+            padding: 3rem;
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .terminal-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            color: var(--admin-red);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin: 0;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* ستايل الجدول المطور */
+        .table-wrapper { overflow-x: auto; }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px; /* مسافة بين الصفوف */
+        }
+
+        th {
+            text-align: left;
+            padding: 0 1.5rem 1rem;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        tr.user-row {
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        tr.user-row:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: scale(1.01);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        td {
+            padding: 1.2rem 1.5rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1rem 0 0 1rem; }
+        td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.05); border-radius: 0 1rem 1rem 0; }
+
+        .user-name { font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .user-email { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-dim); }
+
+        /* ستايل قائمة الاختيار */
+        .role-select {
+            background: #050811;
+            color: var(--user-blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .role-select:focus { border-color: var(--user-blue); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+
+        /* الأزرار الملونة */
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            letter-spacing: 1px;
+        }
+
+        .btn-save { background: var(--user-blue); color: white; margin-left: 5px; }
+        .btn-save:hover { background: #2563eb; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--admin-red); border: 1px solid var(--admin-red); }
+        .btn-delete:hover { background: var(--admin-red); color: white; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+
+        /* رسائل الفلاش المنسقة */
+        .flash-msg {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            animation: fadeIn 0.5s;
+        }
+
+        .back-nav {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover { color: #fff; }
+
+        /* إزالة الميلان */
+        * { font-style: normal !important; }
     </style>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0b0f1a;">
-    <div class="admin-card">
-        <h1>SYSTEM OVERSEER</h1>
-        <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Full Authority Terminal</p>
+<body>
 
-        {% with messages = get_flashed_messages() %}{% if messages %}
-            {% for msg in messages %}<div style="color: #10b981; margin-bottom: 1rem;">✔ {{ msg }}</div>{% endfor %}
-        {% endif %}{% endwith %}
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="header-icon"><i class="fas fa-microchip"></i></div>
+            <h1>System Overseer</h1>
+            <p class="subtitle">Root Level Authority Terminal</p>
+        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>Email Address</th>
-                    <th>Update Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <form action="{{ url_for('update_role', target_id=user.id) }}" method="POST">
-                            <select name="new_role" class="role-select">
-                                <option value="User" {% if user.role == 'User' %}selected{% endif %}>User</option>
-                                <option value="Manager" {% if user.role == 'Manager' %}selected{% endif %}>Manager</option>
-                                <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
-                            </select>
-                            <button type="submit" class="btn-sm btn-save">SAVE</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form action="{{ url_for('delete_user', target_id=user.id) }}" method="POST" onsubmit="return confirm('Delete this user permanently?');">
-                            <button type="submit" class="btn-sm btn-delete">DELETE</button>
-                        </form>
-                    </td>
-                </tr>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                <div class="flash-msg"><i class="fas fa-check-circle"></i> {{ msg }}</div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <a href="{{ url_for('dashboard') }}" style="display: block; margin-top: 2rem; color: #94a3b8; text-decoration: none; font-size: 0.8rem;">➔ BACK TO DASHBOARD</a>
+            {% endif %}
+        {% endwith %}
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Identified User</th>
+                        <th>Network Address</th>
+                        <th>Privilege Protocol</th>
+                        <th>Security Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="user-row">
+                        <td>
+                            <div class="user-name">
+                                <i class="fas fa-id-badge" style="color: var(--text-dim); font-size: 0.8rem;"></i>
+                                {{ user.name }}
+                            </div>
+                        </td>
+                        <td class="user-email">{{ user.email }}</td>
+                        <td>
+                            <form action="{{ url_for('update_role', target_id=user.id) }}" method="POST" style="display: flex; align-items: center;">
+                                <select name="new_role" class="role-select">
+                                    <option value="User" {% if user.role == 'User' %}selected{% endif %}>Standard User</option>
+                                    <option value="Manager" {% if user.role == 'Manager' %}selected{% endif %}>Operations Manager</option>
+                                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Terminal Admin</option>
+                                </select>
+                                <button type="submit" class="btn-action btn-save">Deploy</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_user', target_id=user.id) }}" method="POST" onsubmit="return confirm('CRITICAL: Permanent Deletion Sequence?');">
+                                <button type="submit" class="btn-action btn-delete">
+                                    <i class="fas fa-trash-alt"></i> Purge
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="back-nav">
+            <a href="{{ url_for('dashboard') }}" class="back-link">
+                <i class="fas fa-chevron-left"></i> RETURN TO MAIN INTERFACE
+            </a>
+        </div>
     </div>
+
 </body>
 </html>
