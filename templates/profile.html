@@ -2,211 +2,261 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Sentinel Hub - User Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub | Identity Profile</title>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ستايل البروفايل الاحترافي */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            --bg-dark: #0b0f1a;
-            --card-bg: #161b26;
+            --bg-deep: #050811;
+            --card-glass: rgba(22, 27, 38, 0.8);
             --primary-blue: #2563eb;
+            --accent-cyan: #0ea5e9;
             --admin-red: #ef4444;
             --manager-gold: #f59e0b;
             --user-green: #10b981;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background: radial-gradient(circle at bottom right, #1e293b, #050811);
             color: var(--text-main);
             font-family: 'Inter', sans-serif !important;
             margin: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            padding: 20px;
         }
 
-        /* حاوية الأنميشن للدخول */
-        .profile-container {
-            animation: slideUp 0.8s ease-out forwards;
-            opacity: 0;
+        /* أنيميشن دخول الصفحة بالكامل */
+        @keyframes profileEntrance {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        .profile-wrapper {
+            width: 100%;
+            max-width: 480px;
+            animation: profileEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .profile-card {
-            background: var(--card-bg);
-            width: 450px;
-            padding: 3rem;
-            border-radius: 2rem;
-            border: 1px solid var(--border-color);
+            background: var(--card-glass);
+            backdrop-filter: blur(25px);
+            border-radius: 2.5rem;
+            padding: 3.5rem 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
             position: relative;
         }
 
-        /* تأثير الأفاتار (الصورة الشخصية) */
-        .avatar-wrapper {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, var(--card-bg), #1e293b);
-            margin: 0 auto 1.5rem;
+        /* تأثير التوهج خلف الصورة الشخصية */
+        .avatar-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 2rem;
+        }
+
+        .avatar-main {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            border: 4px solid var(--border-color);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
+            font-size: 4rem;
+            color: var(--primary-blue);
+            border: 4px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
         }
 
-        .avatar-wrapper:hover {
-            transform: scale(1.1) rotate(5deg);
-            border-color: var(--primary-blue);
+        /* أنيميشن النبض الضوئي */
+        .avatar-glow {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            filter: blur(20px);
+            opacity: 0.2;
+            animation: pulse 3s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.3); opacity: 0.4; }
         }
 
         h1 {
+            font-size: 2rem;
+            font-weight: 800;
             margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: -0.5px;
         }
 
+        /* شارة الرتبة المتطورة */
         .role-badge {
-            display: inline-block;
-            margin-top: 0.5rem;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.7rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 3rem;
         }
 
-        /* ألوان الرتب في البروفايل */
-        .badge-Admin { background: rgba(239, 68, 68, 0.1); color: var(--admin-red); border: 1px solid var(--admin-red); }
-        .badge-Manager { background: rgba(245, 158, 11, 0.1); color: var(--manager-gold); border: 1px solid var(--manager-gold); }
-        .badge-User { background: rgba(16, 185, 129, 0.1); color: var(--user-green); border: 1px solid var(--user-green); }
+        .badge-Admin { background: rgba(239, 68, 68, 0.1); color: var(--admin-red); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .badge-Manager { background: rgba(245, 158, 11, 0.1); color: var(--manager-gold); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .badge-User { background: rgba(16, 185, 129, 0.1); color: var(--user-green); border: 1px solid rgba(16, 185, 129, 0.2); }
 
-        /* صفوف المعلومات */
-        .info-section {
+        /* قسم المعلومات المنسق كأنه Dashboard */
+        .info-grid {
             text-align: left;
-            margin-bottom: 2rem;
+            display: grid;
+            gap: 15px;
+            margin-bottom: 3rem;
         }
 
-        .info-row {
+        .info-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.2rem 1.5rem;
+            border-radius: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
         }
 
-        .info-row:last-child { border-bottom: none; }
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(5px);
+        }
 
-        .label {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 600;
+        .info-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-dim);
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .value {
-            color: var(--text-main);
+        .info-value {
+            font-size: 0.95rem;
             font-weight: 600;
-            font-size: 1rem;
+            color: #fff;
+        }
+
+        /* حالة الأمان */
+        .status-verified {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--user-green);
+            font-weight: 800;
+            font-size: 0.8rem;
         }
 
         /* الأزرار */
-        .actions {
+        .action-area {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 15px;
         }
 
         .btn {
             flex: 1;
-            padding: 0.9rem;
-            border-radius: 0.8rem;
-            border: none;
+            padding: 1rem;
+            border-radius: 1.2rem;
             font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            font-size: 0.85rem;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
         }
 
-        .btn-back { background: #334155; color: white; }
-        .btn-back:hover { background: #475569; }
-
-        .btn-edit { background: var(--primary-blue); color: white; }
-        .btn-edit:hover { background: #1d4ed8; transform: translateY(-2px); }
-
-        /* الأنميشنز */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+        .btn-return {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* تأثير النبض البسيط خلف الصورة */
-        .avatar-wrapper::after {
-            content: '';
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-blue);
-            animation: pulse 2s infinite;
-            opacity: 0;
+        .btn-return:hover { background: #fff; color: #000; transform: scale(1.05); }
+
+        .btn-edit {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.4); opacity: 0; }
-        }
+        .btn-edit:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5); }
+
+        /* إزالة الميلان */
+        * { font-style: normal !important; }
     </style>
 </head>
 <body>
 
-    <div class="profile-container">
+    <div class="profile-wrapper">
         <div class="profile-card">
-            <div class="avatar-wrapper">
-                👤
+            
+            <div class="avatar-container">
+                <div class="avatar-glow"></div>
+                <div class="avatar-main">
+                    <i class="fas fa-user-shield"></i>
+                </div>
             </div>
             
             <h1>{{ user['name'] }}</h1>
             <div class="role-badge badge-{{ user['role'] }}">
-                {{ user['role'] }} Access
+                <i class="fas fa-certificate"></i>
+                {{ user['role'] }} Authority
             </div>
 
-            <div class="info-section">
-                <div class="info-row">
-                    <span class="label">Full Name</span>
-                    <span class="value">{{ user['name'] }}</span>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-signature"></i> Full Name</span>
+                    <span class="info-value">{{ user['name'] }}</span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Email Address</span>
-                    <span class="value">{{ user['email'] }}</span>
+                
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-fingerprint"></i> System ID</span>
+                    <span class="info-value">{{ user['email'] }}</span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Account Status</span>
-                    <span class="value" style="color: var(--user-green);">● Verified</span>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-shield-halved"></i> Security Status</span>
+                    <span class="status-verified">
+                        <i class="fas fa-circle-check"></i> ENCRYPTED
+                    </span>
                 </div>
-                <div class="info-row">
-                    <span class="label">2FA Security</span>
-                    <span class="value" style="color: var(--primary-blue);">Enabled</span>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-lock"></i> 2FA Protocol</span>
+                    <span class="info-value" style="color: var(--accent-cyan);">ACTIVE</span>
                 </div>
             </div>
 
-            <div class="actions">
-                <a href="{{ url_for('dashboard') }}" class="btn btn-back">DASHBOARD</a>
-                <button class="btn btn-edit">EDIT PROFILE</button>
+            <div class="action-area">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-return">BACK TO HUB</a>
+                <button class="btn btn-edit">EDIT IDENTITY</button>
             </div>
         </div>
     </div>
