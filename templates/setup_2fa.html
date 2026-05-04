@@ -1,60 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Sentinel Hub - Setup 2FA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub | 2FA Configuration</title>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { background-color: #0b111b; color: white; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-card { background: #161b26; padding: 2.5rem; border-radius: 1.5rem; width: 400px; text-align: center; border: 1px solid #1e293b; box-shadow: 0 20px 50px rgba(0,0,0,0.5); box-sizing: border-box; }
-        h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
-        .subtitle { color: #94a3b8; font-size: 0.85rem; margin: 0.5rem 0 1.5rem; line-height: 1.5; }
-        .qr-box { background: white; padding: 12px; border-radius: 1rem; display: inline-block; margin-bottom: 1rem; }
-        .qr-box img { width: 160px; height: 160px; display: block; }
-        
-        /* ستايل كود المفتاح اليدوي بعد الإصلاح */
-        .manual-key-container { margin-bottom: 1.5rem; width: 100%; }
-        .manual-key-label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;}
-        .manual-key-box { 
-            background: #0f131d; 
-            padding: 12px; 
-            border-radius: 0.6rem; 
-            border: 1px dashed #3b82f6; 
-            font-family: monospace; 
-            font-size: 1rem; /* تصغير الخط قليلا */
-            color: #3b82f6; 
-            letter-spacing: 2px; /* تقليل المسافة بين الحروف */
-            font-weight: bold; 
-            word-break: break-all; /* السطر السحري لمنع خروج النص من المربع */
-            box-sizing: border-box;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+        :root {
+            --bg-deep: #050811;
+            --primary-glow: #4f46e5;
+            --accent-cyan: #0ea5e9;
+            --card-glass: rgba(22, 27, 38, 0.85);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger-soft: rgba(239, 68, 68, 0.15);
         }
 
-        .btn-verify { width: 100%; padding: 1rem; background: #4f46e5; color: white; border: none; border-radius: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; text-transform: uppercase; transition: 0.2s; box-sizing: border-box; }
-        .btn-verify:hover { background: #4338ca; transform: translateY(-1px); }
-        .warning-msg { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; padding: 12px; border-radius: 0.6rem; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at center, #1e293b, #050811);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* أنيميشن الدخول */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .auth-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            padding: 3rem 2.5rem;
+            border-radius: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            animation: fadeInScale 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-badge {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-cyan);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        h2 { font-size: 1.7rem; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.5px; }
+        .subtitle { color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; margin-bottom: 2rem; }
+
+        /* حاوية الـ QR Code مع أنيميشن المسح الضوئي */
+        .qr-outer-container {
+            position: relative;
+            display: inline-block;
+            padding: 15px;
+            background: white;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 40px rgba(79, 70, 229, 0.15);
+        }
+
+        .qr-outer-container img {
+            width: 170px;
+            height: 170px;
+            display: block;
+            border-radius: 0.5rem;
+        }
+
+        /* خط المسح اللي بيتحرك */
+        .qr-outer-container::after {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px;
+            height: 2px;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--accent-cyan), 0 0 30px var(--accent-cyan);
+            animation: scanLine 3s infinite linear;
+            z-index: 5;
+        }
+
+        @keyframes scanLine {
+            0% { top: 15px; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 185px; opacity: 0; }
+        }
+
+        /* ستايل المفتاح اليدوي */
+        .manual-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .manual-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 1px;
+        }
+
+        .key-display {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+            background: rgba(14, 165, 233, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            word-break: break-all;
+            display: block;
+            border: 1px dashed rgba(14, 165, 233, 0.3);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* صندوق التحذير */
+        .alert-box {
+            background: var(--danger-soft);
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--primary-glow), #6366f1);
+            color: white;
+            border: none;
+            border-radius: 1.2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        /* إزالة الميلان نهائياً */
+        * { font-style: normal !important; }
     </style>
 </head>
 <body>
+
     <div class="auth-card">
-        <h2>Scan QR Code</h2>
-        <p class="subtitle">Open Google Authenticator on your phone and scan the code below. <strong>You will need it every time you log in.</strong></p>
+        <span class="security-badge">Identity Linkage Protocol</span>
         
-        <div class="qr-box">
-            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+        <h2>Scan QR Code</h2>
+        <p class="subtitle">Integrate your mobile authenticator app by scanning the cryptographic node below.</p>
+        
+        <div class="qr-outer-container">
+            <!-- QR Code من السيرفر -->
+            <img src="data:image/png;base64,{{ qr_code }}" alt="Secure Token Node">
         </div>
 
-        <div class="manual-key-container">
-            <div class="manual-key-label">Or enter Setup Key manually:</div>
-            <div class="manual-key-box">{{ secret_key }}</div>
+        <div class="manual-section">
+            <span class="manual-label"><i class="fas fa-keyboard"></i> Manual Entry Key</span>
+            <code class="key-display">{{ secret_key }}</code>
         </div>
 
-        <div class="warning-msg">
-            ⚠ Do not skip! Setup 2FA before proceeding.
+        <div class="alert-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            CRITICAL: Backup this key in a secure location.
         </div>
 
         <form method="POST">
-            <button type="submit" class="btn-verify">I HAVE SAVED IT ➔</button>
+            <button type="submit" class="btn-confirm">
+                PROTOCOL SYNCHRONIZED <i class="fas fa-chevron-right"></i>
+            </button>
         </form>
     </div>
+
 </body>
 </html>
