@@ -1,43 +1,239 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Sentinel Hub - Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Hub | Managerial Insights</title>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .manager-card { background: #161b26; padding: 2rem; border-radius: 1.5rem; width: 90%; max-width: 800px; border: 1px solid #1e293b; text-align: center; }
-        h1 { color: #f59e0b; letter-spacing: 2px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-        th { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #1e293b; text-align: left; }
-        td { padding: 15px 10px; border-bottom: 1px solid #0f172a; font-size: 0.9rem; text-align: left; }
-        .role-text { color: #f59e0b; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+        :root {
+            --bg-deep: #050811;
+            --card-glass: rgba(22, 27, 38, 0.8);
+            --manager-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent-glow: rgba(245, 158, 11, 0.2);
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1e293b, #050811);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif !important;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px 20px;
+        }
+
+        /* أنيميشن دخول الصفحة */
+        @keyframes containerEntrance {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .manager-container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-glass);
+            backdrop-filter: blur(25px);
+            border-radius: 2.5rem;
+            padding: 3.5rem 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
+            animation: containerEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header-top {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            color: var(--manager-gold);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin: 0;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--manager-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .read-only-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 6px 18px;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--manager-gold);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ستايل الجدول العائم (Floating Rows) */
+        .table-wrapper { margin-top: 2rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            padding: 0 1.5rem 1rem;
+            text-align: left;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        tr.data-row {
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        tr.data-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01) translateX(5px);
+        }
+
+        td {
+            padding: 1.2rem 1.5rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1rem 0 0 1rem; }
+        td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.05); border-radius: 0 1rem 1rem 0; }
+
+        .user-info { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #fff; }
+        .email-text { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-dim); }
+        
+        .role-pill {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--manager-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-active {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #10b981;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .footer-action {
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-link:hover { color: #fff; transform: translateX(-5px); }
+
+        /* إزالة الميلان */
+        * { font-style: normal !important; }
     </style>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0b0f1a;">
-    <div class="manager-card">
-        <h1>MANAGER VIEW</h1>
-        <p style="color: #94a3b8; font-size: 0.8rem;">DATABASE MONITORING (READ-ONLY)</p>
+<body>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Full Name</th>
-                    <th>Email Address</th>
-                    <th>System Role</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td style="font-weight: 600;">{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td class="role-text">{{ user.role }}</td>
-                    <td style="color: #10b981; font-size: 0.75rem;">● ACTIVE</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{{ url_for('dashboard') }}" style="display: block; margin-top: 2rem; color: #94a3b8; text-decoration: none; font-size: 0.8rem;">➔ BACK TO DASHBOARD</a>
+    <div class="manager-container">
+        <div class="header-top">
+            <div class="header-icon"><i class="fas fa-chart-line"></i></div>
+            <h1>Manager Page</h1>
+            <div class="read-only-badge">
+                <i class="fas fa-lock"></i> Secured Read-Only Access
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Identity Node</th>
+                        <th>Network Address</th>
+                        <th>Privilege Level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="data-row">
+                        <td>
+                            <div class="user-info">
+                                <i class="fas fa-user-circle" style="color: var(--text-dim);"></i>
+                                {{ user.name }}
+                            </div>
+                        </td>
+                        <td class="email-text">{{ user.email }}</td>
+                        <td class="role-pill">{{ user.role }}</td>
+                        <td>
+                            <div class="status-active">
+                                <div class="status-dot"></div>
+                                SYNCHRONIZED
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer-action">
+            <a href="{{ url_for('dashboard') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> RETURN TO MAIN CONSOLE
+            </a>
+        </div>
     </div>
+
 </body>
 </html>
